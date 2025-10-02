@@ -76,7 +76,6 @@ async def retrieval(user_query: UserQuery) -> RetrievedResponse:
     start_time = time.perf_counter()
     # retrieved_results = await vectordb.asimilarity_search(query, k=user_query.k)
     retrieved_results = await vectordb.asimilarity_search_with_relevance_scores(query, k=user_query.k)
-    print(retrieved_results)
     end_time = time.perf_counter()
     latency = round((end_time - start_time) * 1000, 2)
 
@@ -147,7 +146,7 @@ def mask_aadhaar(text: str) -> str:
     def mask_match(match):
         digits = re.sub(r'\D', '', match.group())
         if len(digits) == 12:
-            return f"XXXX-XXXX-{digits[-4:]}"
+            return f"XXXX-XXXX-{digits[-4:]} "
         return match.group()
     return re.sub(r'(?:\d[\s-]*){12}', mask_match, text)
 
