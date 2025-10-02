@@ -1,5 +1,6 @@
 from fastapi import FastAPI, Request
 from starlette.middleware.base import BaseHTTPMiddleware
+from starlette.responses import JSONResponse
 import uvicorn
 from typing import List, Optional, Dict, Any
 from pydantic import BaseModel, Field
@@ -173,6 +174,32 @@ class MaskDetails(BaseModel):
 @aadhaar_mask
 def mask(user_details: MaskDetails) -> Dict[str, str]:
     return {"masked": user_details.details}
+
+@app.get("/healthz")
+async def health_check():
+    health_status = {
+        "status": "ok",
+        "dependencies": {}
+    }
+
+    try:
+        vectordb_test = vectordb.similarity_search("FAQ", k=1)
+        health_status["dependencies"]["vectordb"] = "ok"
+        logger.info("VectorDB Test: ok")
+    except Exception as e:
+        health_status["dependencies"]["vectordb"] = f"error: {str(e)}"
+        health_status["status"] = "degraded"
+
+    try:
+        llm_test = llm.invoke("This is a health check, response `ok` if healthy else `failed`")
+        logger.info("LLM Test: ok")
+        health_status["dependencies"]["llm"] = "ok"
+    except Exception as e:
+        health_status["dependencies"]["llm"] = f"error: {str(e)}"
+        health_status["status"] = "degraded"
+
+    status_code = 200 if health_status["status"] == "ok" else 503
+    return JSONResponse(content=health_status, status_code=status_code)
 
 if __name__ == "__main__":
     uvicorn.run("server:app", host="0.0.0.0", port=8000, reload=True)
