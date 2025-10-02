@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 import uvicorn
-from typing import List, Optional
+from typing import List, Optional, Dict, Any
 from pydantic import BaseModel, Field
 from sklearn.metrics.pairwise import cosine_similarity
 import numpy as np
@@ -9,6 +9,8 @@ from rag_pipeline import vectordb
 from graph import ask_graph
 from models import llm, embeddings_model
 import time
+import re
+from functools import wraps
 import uuid
 
 load_dotenv()
@@ -112,9 +114,41 @@ class GraphQuery(BaseModel):
     resume_data: Optional[str] = None
 
 @app.post("/askgraph")
-async def invoke_graph(user_query: GraphQuery):
+def invoke_graph(user_query: GraphQuery) -> Dict[str, Any]:
     response = ask_graph(user_query.query, user_query.id, user_query.resume_data)
     return response
+
+def mask_aadhaar(text: str) -> str:
+    def mask_match(match):
+        digits = re.sub(r'\D', '', match.group())
+        if len(digits) == 12:
+            return f"XXXX-XXXX-{digits[-4:]}"
+        return match.group()
+    return re.sub(r'(?:\d[\s-]*){12}', mask_match, text)
+
+def aadhaar_mask(func):
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        result = func(*args, **kwargs)
+
+        if isinstance(result, str):
+            return mask_aadhaar(result)
+        
+        if isinstance(result, dict):
+            return {
+                k: mask_aadhaar(v) if isinstance(v, str) else v
+                for k, v in result.items()
+            }
+        return result
+    return wrapper
+
+class MaskDetails(BaseModel):
+    details: str
+
+@app.post("/mask")
+@aadhaar_mask
+def mask(user_details: MaskDetails) -> Dict[str, str]:
+    return {"masked": user_details.details}
 
 if __name__ == "__main__":
     uvicorn.run("server:app", host="0.0.0.0", port=8000, reload=True)
