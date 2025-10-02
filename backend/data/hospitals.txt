@@ -1,0 +1,2 @@
+Network hospitals: CareWell (Chennai), HealOne (Pune), MedAxis (Bengaluru). Non-
+network claims need reimbursement route.

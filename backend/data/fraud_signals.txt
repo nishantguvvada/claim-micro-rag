@@ -1,0 +1,2 @@
+Fraud patterns: duplicate invoices; mismatched admission/discharge dates; non-network
+hospital billed as network.
