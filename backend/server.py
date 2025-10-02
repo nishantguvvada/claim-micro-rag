@@ -1,4 +1,5 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
+from starlette.middleware.base import BaseHTTPMiddleware
 import uvicorn
 from typing import List, Optional, Dict, Any
 from pydantic import BaseModel, Field
@@ -8,10 +9,31 @@ from dotenv import load_dotenv
 from rag_pipeline import vectordb
 from graph import ask_graph
 from models import llm, embeddings_model
+import logging
 import time
 import re
 from functools import wraps
 import uuid
+
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(levelname)s - %(message)s'
+)
+logger = logging.getLogger("MyAppLog")
+
+class LoggingMiddleware(BaseHTTPMiddleware):
+
+    async def dispatch(self, request: Request, call_next):
+        start_time = time.time()
+        try:
+            response = await call_next(request)
+        except Exception as e:
+            logger.error(f"Exception during request: {request.method} {request.url} : {e}")
+            raise e
+        end_time = time.time()
+        latency = round((end_time - start_time) * 1000, 2)
+        logger.info(f"Request: {request.method} {request.url.path} processed in {latency}ms with status code: {response.status_code}")
+        return response
 
 load_dotenv()
 
@@ -20,6 +42,8 @@ app = FastAPI(
     version="1.0.0",
     description="A simple RAG retrieval endpoint."
 )
+
+app.add_middleware(LoggingMiddleware)
 
 @app.get("/")
 def default():
