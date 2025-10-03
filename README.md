@@ -22,10 +22,10 @@ A production-ready Retrieval-Augmented Generation (RAG) system built for insuran
        │
        ▼
 ┌─────────────────────────────────┐
-│      FastAPI Server              │
-│  ┌──────────┬──────────────┐   │
-│  │  /ask    │  /askgraph   │   │
-│  └──────────┴──────────────┘   │
+│      FastAPI Server             │
+│  ┌──────────┬──────────────┐    │
+│  │  /ask    │  /askgraph   │    │
+│  └──────────┴──────────────┘    │
 └──────┬─────────────┬────────────┘
        │             │
        ▼             ▼
