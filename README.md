@@ -250,3 +250,124 @@ Monitor system health and dependencies.
 ```bash
 pytest test_app.py -v
 ```
+
+## ✅ Project Checklist
+
+---
+
+### 📁 1. Ingest & Index
+
+- [x] Create `data/` directory with the required text files:
+
+  - [x] `policy_101.txt`
+  - [x] `policy_201.txt`
+  - [x] `kyc_rules.txt`
+  - [x] `fraud_signals.txt`
+  - [x] `faq_claims.txt`
+  - [x] `hospitals.txt`
+
+- [x] Load and chunk documents sensibly (200–400 chars with overlap)
+- [x] Embed documents using a **local embedding model** (e.g., `sentence-transformers/all-MiniLM-L6-v2`)
+- [x] Store embeddings in a **local vector database** (e.g., FAISS)
+- [x] Document and expose a retrieval endpoint that returns top-k search results
+
+---
+
+### 🤖 2. Answering API
+
+- [x] Implement `POST /ask` endpoint
+- [x] Request body: `{ "query": "...", "k": 3 }`
+- [x] Pipeline: Retrieve top-k → Compose answer → Return citations
+- [x] Response JSON contains:
+
+  - [x] `answer` – concise answer based only on retrieved context
+  - [x] `citations` – list with `doc` and `snippet`
+  - [x] `retrieval` – includes `k` and `latency_ms`
+
+- [x] At least one citation must appear for simple queries (e.g., TAT, room rent, network hospitals)
+
+---
+
+### 💬 3. Conversational AI Agent
+
+- [x] Build a conversational agent (Semantic Kernel or similar)
+- [x] Retain and persist **chat history** for contextual conversations
+- [x] Implement **memory** to maintain context across turns
+- [x] Add **prompt engineering** for more natural, accurate responses
+- [x] Agent should:
+
+  - [x] Ask clarifying questions when input is incomplete
+  - [x] Format responses according to instructions
+
+---
+
+### 📊 4. Mini Evaluation
+
+- [x] Create `eval.py` to:
+
+  - [x] Run each query from `eval.jsonl` through `/ask` or pipeline directly
+  - [x] Compute:
+
+    - [x] `precision@k` (does any retrieved doc contain `ans_contains`?)
+    - [x] `hit rate` (≥1 match)
+
+  - [x] Print a tiny report: `n=5 | hit_rate=0.8 | precision@3=0.73`
+
+- [x] Add a small evaluation set (`eval.jsonl`) with 5 sample queries
+
+---
+
+### 🔐 5. Basic Redaction Utility (Bonus)
+
+- [x] Implement `mask_aadhaar(text)` to replace 12-digit numbers with `XXXX-XXXX-####`
+- [x] Demonstrate usage with a `/mask` endpoint
+- [x] (Optional) Explore out-of-the-box filtering features (e.g., Azure AI Content Filters)
+
+---
+
+### 📦 6. Packaging & Quality
+
+- [x] Run the service with a single command:
+
+  ```bash
+  uvicorn app:app --reload
+  ```
+
+- [x] Provide a clear and complete `README.md`:
+
+  - [x] Project setup instructions
+  - [x] How to run the application
+
+- [x] Write **unit tests** (`pytest`):
+
+  - [x] Test `mask_aadhaar`
+  - [x] Test retrieval returns ≥ 1 citation for a known question
+
+- [] (Optional) Add a `Dockerfile` for containerization
+
+---
+
+### ✅ Acceptance Criteria
+
+- [x] `/ask` returns coherent answers with citations
+- [x] `eval.py` runs successfully and prints metrics
+- [x] Repository contains:
+
+  - [x] `app.py` (or `main.py`)
+  - [x] `eval.py`
+  - [x] `data/` directory
+  - [x] `README.md`
+  - [x] `test_app.py`
+
+- [x] Project runs locally in a fresh virtual environment without paid keys
+
+---
+
+### 🌟 Stretch Goals (Optional)
+
+- [x] Add grounding score (average cosine similarity)
+- [] Implement a simple re-ranker (e.g., BM25) and show metric improvement
+- [] Add a streaming endpoint (Server-Sent Events)
+- [x] Implement `/healthz` endpoint and lightweight logging middleware
+
+---
