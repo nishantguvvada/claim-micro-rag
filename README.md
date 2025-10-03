@@ -101,7 +101,7 @@ A production-ready Retrieval-Augmented Generation (RAG) system built for insuran
 
 6. **Build the vector database**
 
-   Uncomment `store.create_index(chunks)` in rag_pipeline.py to create the index.
+   Uncomment `store.create_index(chunks)` in rag_pipeline.py to create the index for the first time.
 
    ```bash
    python rag_pipeline.py
@@ -113,6 +113,12 @@ A production-ready Retrieval-Augmented Generation (RAG) system built for insuran
 
    ```bash
    python main.py
+   ```
+
+   or
+
+   ```bash
+   uvicorn server:app --reload
    ```
 
    The API will be available at `http://localhost:8000`
