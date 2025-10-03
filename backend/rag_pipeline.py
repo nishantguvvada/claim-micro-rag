@@ -53,7 +53,7 @@ class VectorDB:
     def load_index(self) -> FAISS:
         return FAISS.load_local("./vdb", self.embeddings_model, allow_dangerous_deserialization=True)
 
-# vectordb = VectorDB(embeddings_model=embeddings_model).load_index() # uncomment after building the index
+vectordb = VectorDB(embeddings_model=embeddings_model).load_index() # uncomment after building the index
 
 if __name__ == "__main__":
     loader = DocumentLoader()

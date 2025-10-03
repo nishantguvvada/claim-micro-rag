@@ -1,6 +1,7 @@
 from fastapi import FastAPI, Request
 from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.responses import JSONResponse
+from fastapi.middleware.cors import CORSMiddleware
 import uvicorn
 from typing import List, Optional, Dict, Any
 from pydantic import BaseModel, Field
@@ -13,6 +14,7 @@ from models import llm, embeddings_model
 import logging
 import time
 import re
+import os
 from functools import wraps
 import uuid
 
@@ -42,6 +44,18 @@ app = FastAPI(
     title="Claims Retrieval API",
     version="1.0.0",
     description="A simple RAG retrieval endpoint."
+)
+
+origins = [
+    f"{os.getenv('FRONTEND_URL')}"
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"]
 )
 
 app.add_middleware(LoggingMiddleware)
