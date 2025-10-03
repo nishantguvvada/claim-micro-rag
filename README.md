@@ -321,7 +321,7 @@ pytest test_app.py -v
 
 - [x] Implement `mask_aadhaar(text)` to replace 12-digit numbers with `XXXX-XXXX-####`
 - [x] Demonstrate usage with a `/mask` endpoint
-- [x] (Optional) Explore out-of-the-box filtering features (e.g., Azure AI Content Filters)
+- [ ] (Optional) Explore out-of-the-box filtering features (e.g., Azure AI Content Filters)
 
 ---
 
@@ -343,7 +343,7 @@ pytest test_app.py -v
   - [x] Test `mask_aadhaar`
   - [x] Test retrieval returns ≥ 1 citation for a known question
 
-- [] (Optional) Add a `Dockerfile` for containerization
+- [ ] (Optional) Add a `Dockerfile` for containerization
 
 ---
 
@@ -366,8 +366,8 @@ pytest test_app.py -v
 ### 🌟 Stretch Goals (Optional)
 
 - [x] Add grounding score (average cosine similarity)
-- [] Implement a simple re-ranker (e.g., BM25) and show metric improvement
-- [] Add a streaming endpoint (Server-Sent Events)
+- [ ] Implement a simple re-ranker (e.g., BM25) and show metric improvement
+- [ ] Add a streaming endpoint (Server-Sent Events)
 - [x] Implement `/healthz` endpoint and lightweight logging middleware
 
 ---
