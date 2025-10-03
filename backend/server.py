@@ -4,7 +4,7 @@ from starlette.responses import JSONResponse
 import uvicorn
 from typing import List, Optional, Dict, Any
 from pydantic import BaseModel, Field
-from sklearn.metrics.pairwise import cosine_similarity
+# from sklearn.metrics.pairwise import cosine_similarity
 import numpy as np
 from dotenv import load_dotenv
 from rag_pipeline import vectordb

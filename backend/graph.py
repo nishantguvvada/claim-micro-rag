@@ -6,8 +6,7 @@ from langgraph.graph import MessagesState, StateGraph
 from langgraph.checkpoint.memory import InMemorySaver
 from langgraph.prebuilt import ToolNode, tools_condition
 from langgraph.types import Command, interrupt
-from pydantic import BaseModel, Field
-from typing import Literal, Optional
+from typing import Optional
 from models import embeddings_model, llm
 import uuid
 

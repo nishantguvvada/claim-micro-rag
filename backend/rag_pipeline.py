@@ -1,8 +1,8 @@
 from langchain_community.document_loaders import DirectoryLoader, TextLoader
+from langchain_community.vectorstores import FAISS, DistanceStrategy
 from langchain_core.documents import Document
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from typing import List
-from langchain_community.vectorstores import FAISS, DistanceStrategy
 from models import embeddings_model
 from dotenv import load_dotenv
 
@@ -53,7 +53,7 @@ class VectorDB:
     def load_index(self) -> FAISS:
         return FAISS.load_local("./vdb", self.embeddings_model, allow_dangerous_deserialization=True)
 
-vectordb = VectorDB(embeddings_model=embeddings_model).load_index()
+# vectordb = VectorDB(embeddings_model=embeddings_model).load_index() # uncomment after building the index
 
 if __name__ == "__main__":
     loader = DocumentLoader()
@@ -63,7 +63,7 @@ if __name__ == "__main__":
     print(chunks)
 
     store = VectorDB(embeddings_model=embeddings_model)
-    # store.create_index(chunks)
+    # store.create_index(chunks) # uncomment to create the index for the first time
     vectordb = store.load_index()
 
     docs = vectordb.similarity_search_with_relevance_scores("what are the kyc rules?", k=3, score_threshold=0.80)
